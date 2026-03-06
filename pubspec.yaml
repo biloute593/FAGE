@@ -1,0 +1,43 @@
+name: gestureface
+description: Système d'authentification biométrique double facteur simultané (visage + geste main) avec protection des données, panic mode et camouflage.
+publish_to: 'none'
+version: 3.1.0+1
+
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  # Core
+  rxdart: ^0.28.0
+  get_it: ^7.7.0
+  
+  # Security & Storage
+  flutter_secure_storage: ^9.0.0
+  sqflite_sqlcipher: ^3.0.0
+  crypto: ^3.0.3
+  
+  # Camera & Vision
+  camera: ^0.10.5+9
+  mediapipe_vision: ^0.2.0 # API Tasks unifiée com.google.mediapipe.tasks.vision
+  tflite_flutter: ^0.10.4
+  
+  # Platform checks (Integrity & Anti-Tamper)
+  device_info_plus: ^10.1.0
+  root_test: ^1.2.0
+  
+  # UI & State
+  provider: ^6.1.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  build_runner: ^2.4.9
+  mockito: ^5.4.4
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/fake_gallery/
