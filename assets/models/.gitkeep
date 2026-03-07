@@ -1,0 +1,6 @@
+# Placeholder for ML models
+# Add TFLite models here:
+# - ArcFace.tflite
+# - FaceLandmarker.tflite
+# - HandLandmarker.tflite
+# - rPPG.tflite
