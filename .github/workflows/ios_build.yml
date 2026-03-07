@@ -28,10 +28,23 @@ jobs:
 
       - name: Build iOS payload (No Codesign)
         run: |
-          flutter build ios --release --no-codesign || true
-          # Si la build échoue à l'étape Xcode archive, le dossier route existe.
+          # Use --no-codesign to prevent failure at the xcode archive step
+          flutter build ios --release --no-codesign || echo "Expected codesign failure, continuing..."
+          
+          # The Runner.app is still generated in the intermediate build directory
           mkdir -p Payload
-          mv build/ios/iphoneos/Runner.app Payload/ || echo "Runner.app introuvable"
+          
+          # Try the path where flutter leaves the app before archiving
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            mv build/ios/iphoneos/Runner.app Payload/
+          elif [ -d "build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app" ]; then
+            mv build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app Payload/
+          else
+            echo "Error: Could not find Runner.app"
+            exit 1
+          fi
+          
+          # Zip into an unsigned IPA
           zip -r -9 GestureFace.ipa Payload/
 
       - name: Upload IPA Artifact
