@@ -13,7 +13,7 @@ class IconManager {
       // Types: 'calculator', 'weather', 'clock'
       await _channel.invokeMethod('changeIcon', {'iconName': type});
     } on PlatformException catch (e) {
-      print("Failed to change icon: \${e.message}");
+      print("Failed to change icon: ${e.message}");
     }
   }
 
