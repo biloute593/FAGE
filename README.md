@@ -17,6 +17,59 @@ Système d'authentification biométrique double facteur simultané (visage + ges
 5. Compilez l'application en mode release pour garantir l'activation de Native Keystore System:
    `flutter run --release`
 
+## Récupérer le fichier IPA pour tester sur iPhone
+
+Le fichier **GestureFace.ipa** est généré automatiquement par le CI (GitHub Actions) à chaque push sur la branche `main`.
+
+### Étapes pour télécharger l'IPA
+
+1. Allez sur la page GitHub du projet : [https://github.com/biloute593/FAGE](https://github.com/biloute593/FAGE)
+2. Cliquez sur l'onglet **Actions** en haut de la page.
+3. Sélectionnez le workflow **"iOS Build (Unsigned)"** dans la liste à gauche.
+4. Cliquez sur la dernière exécution réussie (icône ✅ verte).
+5. En bas de la page du workflow run, dans la section **Artifacts**, téléchargez **`GestureFace-iOS-Build`**.
+6. Décompressez le fichier `.zip` téléchargé — vous y trouverez le fichier **`GestureFace.ipa`**.
+
+> **Note :** Les artifacts sont conservés pendant **7 jours**. Si le lien a expiré, relancez le workflow manuellement via le bouton **"Run workflow"** dans l'onglet Actions.
+
+### Installer l'IPA sur votre iPhone
+
+L'IPA est **non signée** (`--no-codesign`), ce qui signifie qu'elle ne peut pas être installée directement depuis l'App Store. Utilisez l'une des méthodes suivantes :
+
+| Outil | Plateforme | Lien |
+|-------|-----------|------|
+| **AltStore** | Windows / macOS | [altstore.io](https://altstore.io) |
+| **Sideloadly** | Windows / macOS | [sideloadly.io](https://sideloadly.io) |
+
+**Avec AltStore :**
+1. Installez AltStore sur votre PC/Mac et sur votre iPhone.
+2. Connectez votre iPhone via USB.
+3. Ouvrez AltStore sur l'iPhone, allez dans **My Apps** > **+** et sélectionnez le fichier `GestureFace.ipa`.
+4. Entrez votre identifiant Apple (un compte gratuit suffit).
+5. L'application sera installée et valide pendant 7 jours (limite imposée par Apple pour les comptes développeur gratuits, renouvelable automatiquement par AltStore).
+
+**Avec Sideloadly :**
+1. Installez Sideloadly sur votre PC/Mac.
+2. Connectez votre iPhone via USB.
+3. Glissez-déposez le fichier `GestureFace.ipa` dans Sideloadly.
+4. Entrez votre identifiant Apple et cliquez sur **Start**.
+5. Sur l'iPhone, allez dans **Réglages > Général > VPN et gestion de l'appareil** et faites confiance au certificat.
+
+### Build local (optionnel)
+
+Si vous préférez compiler l'IPA vous-même :
+
+```bash
+flutter create . --org com.gestureface   # Génère les fichiers iOS si absents
+flutter pub get
+flutter build ios --release --no-codesign
+mkdir -p Payload
+mv build/ios/iphoneos/Runner.app Payload/
+zip -r -9 GestureFace.ipa Payload/
+```
+
+Le fichier `GestureFace.ipa` sera créé dans le répertoire courant.
+
 ## Architecture
 Le projet respecte une architecture par modules, synchronisée via un Event Bus asynchrone pour traiter chaque frame vidéo (30fps) dans des délais de l'ordre de ~37ms.
 

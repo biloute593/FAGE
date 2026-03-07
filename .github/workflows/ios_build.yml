@@ -20,6 +20,9 @@ jobs:
           channel: 'stable'
           architecture: x64
 
+      - name: Generate iOS project files
+        run: flutter create . --org com.gestureface
+
       - name: Install dependencies
         run: flutter pub get
 
