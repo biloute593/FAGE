@@ -23,8 +23,13 @@ jobs:
       - name: Generate iOS project files
         run: flutter create . --org com.gestureface
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Install dependencies and generate platform
+        run: |
+          flutter create --platforms=ios .
+          flutter pub get
+
+      - name: Analyze Dart Code
+        run: flutter analyze
 
       - name: Build iOS payload (No Codesign)
         run: |
