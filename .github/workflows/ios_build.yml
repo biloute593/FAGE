@@ -26,21 +26,26 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Analyze Dart code (show all errors)
+      - name: Analyze Dart code
         run: flutter analyze --no-fatal-warnings || true
 
       - name: Build iOS payload (No Codesign)
         run: |
-          flutter build ios --release --no-codesign 2>&1
+          set -o pipefail
+          flutter build ios --release --no-codesign 2>&1 | tee build_log.txt
+          
+      - name: Upload build log
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-log
+          path: build_log.txt
+
+      - name: Package IPA
+        run: |
           mkdir -p Payload
-          if [ -d "build/ios/iphoneos/Runner.app" ]; then
-            mv build/ios/iphoneos/Runner.app Payload/
-            zip -r -9 GestureFace.ipa Payload/
-          else
-            echo "ERROR: Runner.app not found. Build failed."
-            find build/ -name "*.app" 2>/dev/null || echo "No .app found at all."
-            exit 1
-          fi
+          mv build/ios/iphoneos/Runner.app Payload/
+          zip -r -9 GestureFace.ipa Payload/
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
