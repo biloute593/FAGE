@@ -2,7 +2,7 @@ name: iOS Build (Unsigned)
 
 on:
   push:
-    branches: [ "main", "copilot/copy-ipa-file-for-testing" ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
@@ -20,36 +20,19 @@ jobs:
           channel: 'stable'
           architecture: x64
 
-      - name: Generate iOS project files
-        run: flutter create . --org com.gestureface
-
-      - name: Install dependencies and generate platform
+      - name: Generate iOS platform files
         run: |
-          flutter create --platforms=ios .
-          flutter pub get
+          # Crée uniquement les fichiers natifs iOS manquants sans toucher pubspec.yaml
+          flutter create --platforms=ios --project-name gestureface --org com.gestureface .
 
-      - name: Analyze Dart Code
-        run: flutter analyze
+      - name: Install dependencies
+        run: flutter pub get
 
       - name: Build iOS payload (No Codesign)
         run: |
-          # Use --no-codesign to prevent failure at the xcode archive step
-          flutter build ios --release --no-codesign || echo "Expected codesign failure, continuing..."
-          
-          # The Runner.app is still generated in the intermediate build directory
+          flutter build ios --release --no-codesign
           mkdir -p Payload
-          
-          # Try the path where flutter leaves the app before archiving
-          if [ -d "build/ios/iphoneos/Runner.app" ]; then
-            mv build/ios/iphoneos/Runner.app Payload/
-          elif [ -d "build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app" ]; then
-            mv build/ios/archive/Runner.xcarchive/Products/Applications/Runner.app Payload/
-          else
-            echo "Error: Could not find Runner.app"
-            exit 1
-          fi
-          
-          # Zip into an unsigned IPA
+          mv build/ios/iphoneos/Runner.app Payload/
           zip -r -9 GestureFace.ipa Payload/
 
       - name: Upload IPA Artifact
