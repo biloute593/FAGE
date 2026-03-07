@@ -20,10 +20,10 @@ jobs:
           channel: 'stable'
           architecture: x64
 
-      - name: Generate iOS platform files
+      - name: Setup iOS platform files
         run: |
-          # Crée uniquement les fichiers natifs iOS manquants sans toucher pubspec.yaml
-          flutter create --platforms=ios --project-name gestureface --org com.gestureface .
+          # Le projet existe déjà. On génère seulement les fichiers natifs iOS manquants.
+          flutter create --platforms=ios .
 
       - name: Install dependencies
         run: flutter pub get
