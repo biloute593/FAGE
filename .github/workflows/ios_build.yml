@@ -21,19 +21,26 @@ jobs:
           architecture: x64
 
       - name: Setup iOS platform files
-        run: |
-          # Le projet existe déjà. On génère seulement les fichiers natifs iOS manquants.
-          flutter create --platforms=ios .
+        run: flutter create --platforms=ios .
 
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Analyze Dart code (show all errors)
+        run: flutter analyze --no-fatal-warnings || true
+
       - name: Build iOS payload (No Codesign)
         run: |
-          flutter build ios --release --no-codesign
+          flutter build ios --release --no-codesign 2>&1
           mkdir -p Payload
-          mv build/ios/iphoneos/Runner.app Payload/
-          zip -r -9 GestureFace.ipa Payload/
+          if [ -d "build/ios/iphoneos/Runner.app" ]; then
+            mv build/ios/iphoneos/Runner.app Payload/
+            zip -r -9 GestureFace.ipa Payload/
+          else
+            echo "ERROR: Runner.app not found. Build failed."
+            find build/ -name "*.app" 2>/dev/null || echo "No .app found at all."
+            exit 1
+          fi
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
