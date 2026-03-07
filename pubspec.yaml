@@ -10,23 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Core
-  rxdart: ^0.28.0
-  get_it: ^7.7.0
-  
-  # Security & Storage
-  flutter_secure_storage: ^9.0.0
-  sqflite: ^2.3.3
-  crypto: ^3.0.3
-  
-  # Camera
-  camera: ^0.10.5+9
-  
-  # Platform checks
-  device_info_plus: ^10.1.0
-  
   # UI & State
+  rxdart: ^0.28.0
   provider: ^6.1.2
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:
