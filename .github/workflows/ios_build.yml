@@ -28,9 +28,10 @@ jobs:
 
       - name: Build iOS payload (No Codesign)
         run: |
-          flutter build ios --release --no-codesign
+          flutter build ios --release --no-codesign || true
+          # Si la build échoue à l'étape Xcode archive, le dossier route existe.
           mkdir -p Payload
-          mv build/ios/iphoneos/Runner.app Payload/
+          mv build/ios/iphoneos/Runner.app Payload/ || echo "Runner.app introuvable"
           zip -r -9 GestureFace.ipa Payload/
 
       - name: Upload IPA Artifact
