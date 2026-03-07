@@ -1,0 +1,4 @@
+
+# ios/ and build/ are generated locally but we need ios/ for CI
+# Uncommenting below would mean we always run flutter create in CI:
+# **/ios/Flutter/.last_build_id

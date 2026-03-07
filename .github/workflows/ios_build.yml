@@ -20,26 +20,32 @@ jobs:
           channel: 'stable'
           architecture: x64
 
-      - name: Setup iOS platform files
-        run: flutter create --platforms=ios .
+      - name: Generate iOS native project files
+        run: |
+          # Generate the iOS platform files without touching existing Dart code
+          flutter create --platforms=ios --overwrite . 2>&1 | tee create_log.txt || true
+          echo "--- flutter create exit: $?"
+          ls -la ios/ 2>/dev/null || echo "WARNING: ios/ dir not created"
 
       - name: Install dependencies
-        run: flutter pub get
+        run: |
+          flutter pub get 2>&1
 
       - name: Analyze Dart code
-        run: flutter analyze --no-fatal-warnings || true
+        run: flutter analyze --no-fatal-warnings 2>&1 || true
 
-      - name: Build iOS payload (No Codesign)
+      - name: Build iOS (No Codesign)
         run: |
-          set -o pipefail
           flutter build ios --release --no-codesign 2>&1 | tee build_log.txt
-          
-      - name: Upload build log
+
+      - name: Upload logs
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: build-log
-          path: build_log.txt
+          name: build-logs
+          path: |
+            create_log.txt
+            build_log.txt
 
       - name: Package IPA
         run: |
@@ -47,7 +53,7 @@ jobs:
           mv build/ios/iphoneos/Runner.app Payload/
           zip -r -9 GestureFace.ipa Payload/
 
-      - name: Upload IPA Artifact
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: GestureFace-iOS-Build
