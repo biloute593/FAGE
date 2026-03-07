@@ -2,6 +2,25 @@
 
 Système d'authentification biométrique double facteur simultané (visage + geste main) avec protection des données, panic mode et camouflage.
 
+## 🚀 Guide Rapide — Comment installer GestureFace sur votre iPhone
+
+> **Prérequis :** un PC Windows, un câble USB Lightning/USB-C, et votre iPhone.
+
+1. **Mergez cette Pull Request** (bouton vert "Merge" sur GitHub) → le build CI se lance automatiquement.
+2. Attendez ~5 min, puis allez dans l'onglet **[Actions](https://github.com/biloute593/FAGE/actions)** du projet.
+3. Cliquez sur le dernier run ✅ vert **"iOS Build (Unsigned)"**.
+4. En bas de la page, dans **Artifacts**, téléchargez **`GestureFace-iOS-Build`** et décompressez le `.zip`.
+5. Téléchargez et installez **[Sideloadly](https://sideloadly.io)** (gratuit) sur votre PC Windows.
+6. **Branchez votre iPhone** par câble USB à votre PC.
+7. Ouvrez Sideloadly → **glissez-déposez** le fichier `GestureFace.ipa` dans la fenêtre.
+8. Entrez votre **identifiant Apple** (compte gratuit) → cliquez sur **Start**.
+9. Sur l'iPhone : **Réglages → Général → VPN et gestion de l'appareil** → cliquez sur votre email → **"Faire confiance"**.
+10. **C'est fait !** 🎉 L'app GestureFace est sur votre écran d'accueil.
+
+> ⚠️ L'app est valide **7 jours** (limite Apple pour compte gratuit). Refaites les étapes 6-9 avec le même `.ipa` pour la réinstaller.
+
+---
+
 ## Features
 - **Dual-Factor Authentication**: Exige simultanément la reconnaissance faciale (MediaPipe Face Landmarker + ArcFace) et un geste de la main spécifique (MediaPipe Hand Landmarker).
 - **Anti-Tampering**: Protection contre le root, jailbreak, et memory tampering (System Integrity Monitor).
