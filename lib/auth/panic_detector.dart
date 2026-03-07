@@ -21,7 +21,7 @@ class PanicDetector {
       // On s'assure qu'il est maintenu pour éviter les faux positifs (Simulation du timer)
       _verifyHoldDuration();
 
-      debugPrint("PANIC GESTURE DETECTED - Angle Delta: \${(currentAngle - normalAngleRef).abs()}°");
+      debugPrint("PANIC GESTURE DETECTED - Angle Delta: ${(currentAngle - normalAngleRef).abs()}°");
       eventBus.fire(AppEvent.panicTriggered, {'timestamp': DateTime.now().millisecondsSinceEpoch});
     }
   }

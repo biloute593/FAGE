@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import '../core/event_bus.dart';
 import '../core/constants.dart';
@@ -62,7 +63,7 @@ class FaceEngine {
       }
 
     } catch (e) {
-      debugPrint("FaceEngine Error: \$e");
+      debugPrint("FaceEngine Error: $e");
       eventBus.fire(AppEvent.faceNotDetected, {'timestamp': timestamp});
     }
   }

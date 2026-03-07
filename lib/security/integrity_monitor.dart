@@ -51,7 +51,7 @@ class IntegrityMonitor {
       return true;
 
     } catch (e) {
-      debugPrint("Integrity Check Error: \$e");
+      debugPrint("Integrity Check Error: $e");
       eventBus.fire(AppEvent.tamperDetected, {'threat': 'integrity_check_failed'});
       return false; // Fail-safe secure
     }

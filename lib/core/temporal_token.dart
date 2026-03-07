@@ -26,7 +26,7 @@ class TemporalToken {
     final seedBytes = List<int>.generate(32, (i) => random.nextInt(256));
     final seedHex = seedBytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 
-    final rawToken = "\$now-\$hardwareFingerprint-\$currentFrames-\$seedHex";
+    final rawToken = "$now-$hardwareFingerprint-$currentFrames-$seedHex";
     final bytes = utf8.encode(rawToken);
     final digest = sha256.convert(bytes);
 

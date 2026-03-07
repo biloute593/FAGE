@@ -31,7 +31,7 @@ class PhotoVault {
     final scrubbedImage = _purgeExif(rawImage);
 
     // 2. Chiffrement GCM et Stockage via vault
-    await vault.storeSensitiveNote("img_\$fileId", String.fromCharCodes(scrubbedImage));
+    await vault.storeSensitiveNote("img_$fileId", String.fromCharCodes(scrubbedImage));
     
     // 3. Optionnel: Enregistrement d'un Fake Cover en parallèle
   }
@@ -40,7 +40,7 @@ class PhotoVault {
   Future<Uint8List> getRealPhoto(String fileId) async {
     if (!_isUnlocked) throw Exception("Access Denied");
     
-    String decoded = await vault.readSensitiveNote("img_\$fileId");
+    String decoded = await vault.readSensitiveNote("img_$fileId");
     return Uint8List.fromList(decoded.codeUnits);
   }
 
