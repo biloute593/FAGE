@@ -55,6 +55,12 @@ jobs:
         run: |
           flutter pub get 2>&1
 
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install --repo-update 2>&1
+          cd ..
+
       - name: Analyze Dart code
         run: flutter analyze --no-fatal-warnings 2>&1 || true
 
