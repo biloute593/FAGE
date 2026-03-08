@@ -38,11 +38,6 @@ jobs:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.5;/g' ios/Runner.xcodeproj/project.pbxproj || true
           sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '15.5'/g" ios/Podfile || true
           
-          # Aggressively strip Code Signing requirements for the unsigned CI Build
-          sed -i '' 's/CODE_SIGN_IDENTITY = "Apple Development";/CODE_SIGN_IDENTITY = "";/g' ios/Runner.xcodeproj/project.pbxproj || true
-          sed -i '' 's/CODE_SIGNING_REQUIRED = YES;/CODE_SIGNING_REQUIRED = NO;/g' ios/Runner.xcodeproj/project.pbxproj || true
-          sed -i '' 's/CODE_SIGNING_ALLOWED = YES;/CODE_SIGNING_ALLOWED = NO;/g' ios/Runner.xcodeproj/project.pbxproj || true
-          
           # Safe injection of post_install hook via awk
           awk '/post_install do |installer|/ {
             print; 
@@ -56,7 +51,6 @@ jobs:
           }1' ios/Podfile > ios/Podfile_temp && mv ios/Podfile_temp ios/Podfile
           
           echo "--- flutter create exit: $?"
-          ls -la ios/ 2>/dev/null || echo "WARNING: ios/ dir not created"
 
       - name: Install dependencies
         run: |
@@ -65,10 +59,10 @@ jobs:
       - name: Analyze Dart code
         run: flutter analyze --no-fatal-warnings 2>&1 || true
 
-      - name: Build iOS (No Codesign)
+      - name: Build iOS Simulator App (Bypasses Code Signing)
         run: |
           set -o pipefail
-          flutter build ios --release --no-codesign -v 2>&1 | tee build_log.txt
+          flutter build ios --simulator --debug -v 2>&1 | tee build_log.txt
 
       - name: Publish Error Log
         if: failure()
@@ -89,15 +83,15 @@ jobs:
             create_log.txt
             build_log.txt
 
-      - name: Package IPA
+      - name: Package iOS Bundle
         run: |
           mkdir -p Payload
-          mv build/ios/iphoneos/Runner.app Payload/
-          zip -r -9 GestureFace.ipa Payload/
+          mv build/ios/iphonesimulator/Runner.app Payload/
+          zip -r -9 GestureFace-Simulator.zip Payload/
 
-      - name: Upload IPA
+      - name: Upload iOS Package
         uses: actions/upload-artifact@v4
         with:
-          name: GestureFace-iOS-Build
-          path: GestureFace.ipa
+          name: GestureFace-iOS-Simulator
+          path: GestureFace-Simulator.zip
           retention-days: 7
