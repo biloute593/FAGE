@@ -1,7 +1,7 @@
-[ +148 ms] executing: sysctl hw.optional.arm64
-[  +47 ms] Exit code 0 from: sysctl hw.optional.arm64
+[ +164 ms] executing: sysctl hw.optional.arm64
+[  +50 ms] Exit code 0 from: sysctl hw.optional.arm64
 [   +2 ms] hw.optional.arm64: 1
-[  +36 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[  +40 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
 [        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.
 [        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
@@ -24,7 +24,7 @@
 [        ] Artifact Instance of 'IosUsbArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
-[  +25 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
+[  +29 ms] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'IOSEngineArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'FlutterWebSdk' is not required, skipping update.
@@ -37,7 +37,7 @@
 [        ] Artifact Instance of 'MacOSFuchsiaSDKArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'FlutterRunnerSDKArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'FlutterRunnerDebugSymbols' is not required, skipping update.
-[  +70 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
+[  +78 ms] Artifact Instance of 'MaterialFonts' is not required, skipping update.
 [        ] Artifact Instance of 'GradleWrapper' is not required, skipping update.
 [        ] Artifact Instance of 'AndroidGenSnapshotArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'AndroidInternalBuildArtifacts' is not required, skipping update.
@@ -61,32 +61,32 @@
 [        ] Artifact Instance of 'FontSubsetArtifacts' is not required, skipping update.
 [        ] Artifact Instance of 'PubDependencies' is not required, skipping update.
 [  +23 ms] Skipping pub get: version match.
-[  +98 ms] Found plugin google_mlkit_face_detection at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_face_detection-0.13.2/
-[  +16 ms] Found plugin google_mlkit_commons at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.11.1/
+[ +113 ms] Found plugin google_mlkit_face_detection at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_face_detection-0.13.2/
+[  +19 ms] Found plugin google_mlkit_commons at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.11.1/
 [   +7 ms] Found plugin camera at /Users/runner/.pub-cache/hosted/pub.dev/camera-0.10.6/
 [   +2 ms] Found plugin flutter_plugin_android_lifecycle at /Users/runner/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33/
 [   +2 ms] Found plugin camera_web at /Users/runner/.pub-cache/hosted/pub.dev/camera_web-0.3.5+3/
-[  +10 ms] Found plugin camera_avfoundation at /Users/runner/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.23+2/
+[  +11 ms] Found plugin camera_avfoundation at /Users/runner/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.23+2/
 [   +2 ms] Found plugin camera_android at /Users/runner/.pub-cache/hosted/pub.dev/camera_android-0.10.10+15/
-[ +111 ms] Found plugin google_mlkit_face_detection at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_face_detection-0.13.2/
-[   +1 ms] Found plugin google_mlkit_commons at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.11.1/
-[   +5 ms] Found plugin camera at /Users/runner/.pub-cache/hosted/pub.dev/camera-0.10.6/
-[   +1 ms] Found plugin flutter_plugin_android_lifecycle at /Users/runner/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33/
-[   +1 ms] Found plugin camera_web at /Users/runner/.pub-cache/hosted/pub.dev/camera_web-0.3.5+3/
-[   +6 ms] Found plugin camera_avfoundation at /Users/runner/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.23+2/
+[ +112 ms] Found plugin google_mlkit_face_detection at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_face_detection-0.13.2/
+[   +2 ms] Found plugin google_mlkit_commons at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.11.1/
+[   +6 ms] Found plugin camera at /Users/runner/.pub-cache/hosted/pub.dev/camera-0.10.6/
+[   +3 ms] Found plugin flutter_plugin_android_lifecycle at /Users/runner/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33/
+[   +2 ms] Found plugin camera_web at /Users/runner/.pub-cache/hosted/pub.dev/camera_web-0.3.5+3/
+[   +7 ms] Found plugin camera_avfoundation at /Users/runner/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.23+2/
 [   +1 ms] Found plugin camera_android at /Users/runner/.pub-cache/hosted/pub.dev/camera_android-0.10.10+15/
-[  +33 ms] Skipping generating GeneratedPluginRegistrant.h because it is up-to-date.
-[   +7 ms] Skipping generating GeneratedPluginRegistrant.m because it is up-to-date.
-[  +44 ms] executing: sysctl hw.optional.arm64
-[  +38 ms] Exit code 0 from: sysctl hw.optional.arm64
+[  +37 ms] Skipping generating GeneratedPluginRegistrant.h because it is up-to-date.
+[   +8 ms] Skipping generating GeneratedPluginRegistrant.m because it is up-to-date.
+[  +45 ms] executing: sysctl hw.optional.arm64
+[  +42 ms] Exit code 0 from: sysctl hw.optional.arm64
 [   +1 ms] hw.optional.arm64: 1
 [   +1 ms] executing: /usr/bin/arch -arm64e xcrun xcodebuild -version
-[  +86 ms] Exit code 0 from: /usr/bin/arch -arm64e xcrun xcodebuild -version
+[  +91 ms] Exit code 0 from: /usr/bin/arch -arm64e xcrun xcodebuild -version
 [   +1 ms] Xcode 16.4
            Build version 16F6
-[  +41 ms] Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
-[   +8 ms] executing: [/Users/runner/work/FAGE/FAGE/ios/] /usr/bin/arch -arm64e xcrun xcodebuild -list
-[+2771 ms] Command line invocation:
+[  +45 ms] Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+[   +9 ms] executing: [/Users/runner/work/FAGE/FAGE/ios/] /usr/bin/arch -arm64e xcrun xcodebuild -list
+[+2213 ms] Command line invocation:
                /Applications/Xcode_16.4.app/Contents/Developer/usr/bin/xcodebuild -list
 
            Information about project "Runner":
@@ -103,9 +103,9 @@
 
                Schemes:
                    Runner
-[  +16 ms] executing: [/Users/runner/work/FAGE/FAGE/ios/Runner.xcodeproj/] /usr/bin/arch -arm64e xcrun xcodebuild -project /Users/runner/work/FAGE/FAGE/ios/Runner.xcodeproj -scheme Runner -configuration Release -destination generic/platform=iOS -showBuildSettings BUILD_DIR=/Users/runner/work/FAGE/FAGE/build/ios
+[  +17 ms] executing: [/Users/runner/work/FAGE/FAGE/ios/Runner.xcodeproj/] /usr/bin/arch -arm64e xcrun xcodebuild -project /Users/runner/work/FAGE/FAGE/ios/Runner.xcodeproj -scheme Runner -configuration Release -destination generic/platform=iOS -showBuildSettings BUILD_DIR=/Users/runner/work/FAGE/FAGE/build/ios
 [        ] executing: [/Users/runner/work/FAGE/FAGE/ios/Runner.xcodeproj/] /usr/bin/arch -arm64e xcrun xcodebuild -project /Users/runner/work/FAGE/FAGE/ios/Runner.xcodeproj -scheme Runner -configuration Release -destination generic/platform=iOS -showBuildSettings BUILD_DIR=/Users/runner/work/FAGE/FAGE/build/ios
-[+1744 ms] Command line invocation:
+[+1434 ms] Command line invocation:
                /Applications/Xcode_16.4.app/Contents/Developer/usr/bin/xcodebuild -project /Users/runner/work/FAGE/FAGE/ios/Runner.xcodeproj -scheme Runner -configuration Release -destination generic/platform=iOS -showBuildSettings BUILD_DIR=/Users/runner/work/FAGE/FAGE/build/ios
 
            Build settings from command line:
@@ -667,8 +667,8 @@
                __IS_NOT_SIMULATOR_simulator = NO
                arch = undefined_arch
                variant = normal
-[  +26 ms] executing: /usr/bin/plutil -convert xml1 -o - /Users/runner/work/FAGE/FAGE/ios/Runner/Info.plist
-[ +231 ms] Exit code 0 from: /usr/bin/plutil -convert xml1 -o - /Users/runner/work/FAGE/FAGE/ios/Runner/Info.plist
+[  +33 ms] executing: /usr/bin/plutil -convert xml1 -o - /Users/runner/work/FAGE/FAGE/ios/Runner/Info.plist
+[ +296 ms] Exit code 0 from: /usr/bin/plutil -convert xml1 -o - /Users/runner/work/FAGE/FAGE/ios/Runner/Info.plist
 [   +1 ms] <?xml version="1.0" encoding="UTF-8"?>
            <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
            <plist version="1.0">
@@ -743,25 +743,25 @@
            	</array>
            </dict>
            </plist>
-[ +183 ms] Building com.example.gestureface for device (ios-release)...
-[ +168 ms] The Swift Package Manager feature is off. Skipping the migration that adds Swift Package Manager integration...
-[  +14 ms] executing: xattr -r -d com.apple.FinderInfo /Users/runner/work/FAGE/FAGE
-[ +200 ms] Failed to remove xattr com.apple.FinderInfo from /Users/runner/work/FAGE/FAGE
-[ +185 ms] Found plugin google_mlkit_face_detection at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_face_detection-0.13.2/
-[   +5 ms] Found plugin google_mlkit_commons at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.11.1/
-[   +5 ms] Found plugin camera at /Users/runner/.pub-cache/hosted/pub.dev/camera-0.10.6/
-[   +1 ms] Found plugin flutter_plugin_android_lifecycle at /Users/runner/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33/
+[ +207 ms] Building com.example.gestureface for device (ios-release)...
+[ +107 ms] The Swift Package Manager feature is off. Skipping the migration that adds Swift Package Manager integration...
+[   +4 ms] executing: xattr -r -d com.apple.FinderInfo /Users/runner/work/FAGE/FAGE
+[ +199 ms] Failed to remove xattr com.apple.FinderInfo from /Users/runner/work/FAGE/FAGE
+[ +199 ms] Found plugin google_mlkit_face_detection at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_face_detection-0.13.2/
+[  +15 ms] Found plugin google_mlkit_commons at /Users/runner/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.11.1/
+[  +30 ms] Found plugin camera at /Users/runner/.pub-cache/hosted/pub.dev/camera-0.10.6/
+[   +6 ms] Found plugin flutter_plugin_android_lifecycle at /Users/runner/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.33/
 [   +1 ms] Found plugin camera_web at /Users/runner/.pub-cache/hosted/pub.dev/camera_web-0.3.5+3/
-[   +9 ms] Found plugin camera_avfoundation at /Users/runner/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.23+2/
+[   +8 ms] Found plugin camera_avfoundation at /Users/runner/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.23+2/
 [   +1 ms] Found plugin camera_android at /Users/runner/.pub-cache/hosted/pub.dev/camera_android-0.10.10+15/
-[  +15 ms] executing: which pod
-[  +40 ms] executing: pod --version
-[+75438 ms] 1.16.2
-[  +59 ms] Running pod install...
-[+1318 ms] Running pod install... (completed in 1,305ms)
-[   +3 ms] CocoaPods' output:
+[  +16 ms] executing: which pod
+[  +51 ms] executing: pod --version
+[+75123 ms] 1.16.2
+[  +24 ms] Running pod install...
+[+1234 ms] Running pod install... (completed in 1,217ms)
+[   +5 ms] CocoaPods' output:
            ↳
-[   +2 ms]       Preparing
+[   +3 ms]       Preparing
 
                Analyzing dependencies
 
@@ -820,9 +820,9 @@
 [        ] 
                [!] The Podfile does not contain any dependencies.
 
-[  +19 ms] "flutter ios" took 83,125ms.
-[  +44 ms] Error running pod install
-[   +5 ms] 
+[  +23 ms] "flutter ios" took 81,975ms.
+[  +54 ms] Error running pod install
+[   +6 ms] 
            #0      throwToolExit (package:flutter_tools/src/base/common.dart:34:3)
            #1      CocoaPods._runPodInstall (package:flutter_tools/src/macos/cocoapods.dart:366:7)
            <asynchronous suspension>
@@ -857,5 +857,5 @@
 
 
 [   +1 ms] Running 2 shutdown hooks
-[   +5 ms] Shutdown hooks complete
+[   +3 ms] Shutdown hooks complete
 [   +1 ms] exiting with code 1
