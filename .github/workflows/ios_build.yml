@@ -28,7 +28,6 @@ jobs:
           flutter create --platforms=ios --overwrite . 2>&1 | tee create_log.txt || true
           
           # CRITICAL: restore our actual app code and config!
-          # flutter create --overwrite destroys lib/main.dart and pubspec.yaml
           git checkout lib/ pubspec.yaml
           
           # Inject Camera Permissions for the real biometric feed
@@ -39,15 +38,16 @@ jobs:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.5;/g' ios/Runner.xcodeproj/project.pbxproj || true
           sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '15.5'/g" ios/Podfile || true
           
-          # Inject a post_install hook to force all Pods to compile at 15.5
-          echo "post_install do |installer|" >> ios/Podfile
-          echo "  installer.pods_project.targets.each do |target|" >> ios/Podfile
-          echo "    flutter_additional_ios_build_settings(target)" >> ios/Podfile
-          echo "    target.build_configurations.each do |config|" >> ios/Podfile
-          echo "      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'" >> ios/Podfile
-          echo "    end" >> ios/Podfile
-          echo "  end" >> ios/Podfile
-          echo "end" >> ios/Podfile
+          # Safe injection of post_install hook via awk
+          awk '/post_install do |installer|/ {
+            print; 
+            print "  installer.pods_project.targets.each do |target|"; 
+            print "    target.build_configurations.each do |config|"; 
+            print "      config.build_settings[\"IPHONEOS_DEPLOYMENT_TARGET\"] = \"15.5\""; 
+            print "    end"; 
+            print "  end"; 
+            next
+          }1' ios/Podfile > ios/Podfile_temp && mv ios/Podfile_temp ios/Podfile
           
           echo "--- flutter create exit: $?"
           ls -la ios/ 2>/dev/null || echo "WARNING: ios/ dir not created"
