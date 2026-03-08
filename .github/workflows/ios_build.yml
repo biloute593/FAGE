@@ -41,7 +41,8 @@ jobs:
 
       - name: Build iOS (No Codesign)
         run: |
-          flutter build ios --release --no-codesign 2>&1 | tee build_log.txt
+          set -o pipefail
+          flutter build ios --release --no-codesign 2>&1 | tee build_log.txt || (echo "=== BUILD FAILED. LAST 200 LINES ===" && tail -n 200 build_log.txt && exit 1)
 
       - name: Upload logs
         uses: actions/upload-artifact@v4
