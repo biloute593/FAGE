@@ -38,12 +38,18 @@ jobs:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.5;/g' ios/Runner.xcodeproj/project.pbxproj || true
           sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '15.5'/g" ios/Podfile || true
           
+          # Aggressively strip Code Signing requirements for the unsigned CI Build
+          sed -i '' 's/CODE_SIGN_IDENTITY = "Apple Development";/CODE_SIGN_IDENTITY = "";/g' ios/Runner.xcodeproj/project.pbxproj || true
+          sed -i '' 's/CODE_SIGNING_REQUIRED = YES;/CODE_SIGNING_REQUIRED = NO;/g' ios/Runner.xcodeproj/project.pbxproj || true
+          sed -i '' 's/CODE_SIGNING_ALLOWED = YES;/CODE_SIGNING_ALLOWED = NO;/g' ios/Runner.xcodeproj/project.pbxproj || true
+          
           # Safe injection of post_install hook via awk
           awk '/post_install do |installer|/ {
             print; 
             print "  installer.pods_project.targets.each do |target|"; 
             print "    target.build_configurations.each do |config|"; 
             print "      config.build_settings[\"IPHONEOS_DEPLOYMENT_TARGET\"] = \"15.5\""; 
+            print "      config.build_settings[\"ENABLE_BITCODE\"] = \"NO\"";
             print "    end"; 
             print "  end"; 
             next
