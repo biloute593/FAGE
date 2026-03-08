@@ -35,6 +35,10 @@ jobs:
           plutil -insert NSCameraUsageDescription -string "L'application utilise l'appareil photo pour l'authentification faciale." ios/Runner/Info.plist || true
           plutil -insert NSMicrophoneUsageDescription -string "Le micro est requis par le plugin de gestion vidéo." ios/Runner/Info.plist || true
           
+          # Force iOS 15.5 Deployment Target for Google ML Kit compatibility
+          sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.5;/g' ios/Runner.xcodeproj/project.pbxproj || true
+          sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '15.5'/g" ios/Podfile || true
+          
           echo "--- flutter create exit: $?"
           ls -la ios/ 2>/dev/null || echo "WARNING: ios/ dir not created"
 
