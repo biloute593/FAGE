@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:camera/camera.dart';
 import 'dashboard_screen.dart';
-import 'enrollment_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -11,30 +10,17 @@ class AuthScreen extends StatefulWidget {
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
-class _AuthScreenState extends State<AuthScreen>
-    with SingleTickerProviderStateMixin {
+class _AuthScreenState extends State<AuthScreen> {
   bool _isAuthenticating = false;
-  bool _faceScan = false;
-  bool _gestureScan = false;
   bool _authSuccess = false;
-  String _statusText = 'Initialisation de la caméra...';
+  String _statusText = 'Ready / Prêt';
   
   CameraController? _cameraController;
   bool _isCameraInitialized = false;
 
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnimation;
-
   @override
   void initState() {
     super.initState();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1000),
-    )..repeat(reverse: true);
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.08).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
     _initCamera();
   }
 
@@ -57,13 +43,12 @@ class _AuthScreenState extends State<AuthScreen>
       if (mounted) {
         setState(() {
           _isCameraInitialized = true;
-          _statusText = 'Prêt pour l\'authentification\nPositionnez votre visage';
         });
       }
     } catch (e) {
       if (mounted) {
         setState(() {
-          _statusText = 'Erreur d\'accès à la caméra';
+          _statusText = 'Camera error / Erreur caméra';
         });
       }
     }
@@ -72,7 +57,6 @@ class _AuthScreenState extends State<AuthScreen>
   @override
   void dispose() {
     _cameraController?.dispose();
-    _pulseController.dispose();
     super.dispose();
   }
 
@@ -81,30 +65,21 @@ class _AuthScreenState extends State<AuthScreen>
     
     setState(() {
       _isAuthenticating = true;
-      _faceScan = false;
-      _gestureScan = false;
       _authSuccess = false;
-      _statusText = 'Analyse biométrique en cours...';
+      _statusText = 'Scanning... / Analyse en cours...';
     });
 
-    // Simulated real-time scan duration while camera is streaming
-    await Future.delayed(const Duration(milliseconds: 1500));
+    // Simulate recording face and gesture
+    await Future.delayed(const Duration(milliseconds: 2500));
     if (!mounted) return;
+    
     setState(() {
-      _faceScan = true;
-      _statusText = 'Visage reconnu ✓\nAnalyse du geste...';
-    });
-
-    await Future.delayed(const Duration(milliseconds: 1500));
-    if (!mounted) return;
-    setState(() {
-      _gestureScan = true;
-      _statusText = 'Geste reconnu ✓\nAuthentification réussie !';
+      _statusText = 'Success / Succès';
       _authSuccess = true;
       _isAuthenticating = false;
     });
 
-    await Future.delayed(const Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 800));
     if (mounted) {
       Navigator.pushReplacement(
         context,
@@ -115,226 +90,100 @@ class _AuthScreenState extends State<AuthScreen>
 
   @override
   Widget build(BuildContext context) {
+    const Color beige = Color(0xFFE8E4C9);
+    
     return Scaffold(
-      backgroundColor: const Color(0xFF12121F),
+      backgroundColor: const Color(0xFF0B1021),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.only(top: 40),
-                child: Column(
-                  children: [
-                    Text(
-                      'Scan Biométrique',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Technologie GestureFace active',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withOpacity(0.4),
-                      ),
-                    ),
-                  ],
+              const Spacer(),
+              
+              // Minimalist Camera Preview
+              Container(
+                width: 220,
+                height: 220,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: _authSuccess ? Colors.green : beige.withOpacity(0.5),
+                    width: _isAuthenticating ? 4 : 1,
+                  ),
+                ),
+                child: ClipOval(
+                  child: _isCameraInitialized
+                      ? Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Transform.scale(
+                              scale: _cameraController!.value.aspectRatio,
+                              child: Center(
+                                child: CameraPreview(_cameraController!),
+                              ),
+                            ),
+                            if (_isAuthenticating)
+                              Container(
+                                color: beige.withOpacity(0.1),
+                              ),
+                            if (_authSuccess)
+                              Container(
+                                color: Colors.green.withOpacity(0.2),
+                                child: const Icon(Icons.check, size: 64, color: Colors.green),
+                              ),
+                          ],
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(color: beige.withOpacity(0.5)),
+                        ),
                 ),
               ),
-
-              // Central Live Camera Scanner
-              Column(
-                children: [
-                  ScaleTransition(
-                    scale: _isAuthenticating ? _pulseAnimation : const AlwaysStoppedAnimation(1.0),
-                    child: GestureDetector(
-                      onTap: _startAuth,
-                      child: Container(
-                        width: 240,
-                        height: 240,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: _authSuccess
-                                ? const Color(0xFF03DAC6)
-                                : _isAuthenticating
-                                    ? const Color(0xFF6C63FF)
-                                    : Colors.white24,
-                            width: 3,
-                          ),
-                          boxShadow: _isAuthenticating || _authSuccess
-                              ? [
-                                  BoxShadow(
-                                    color: (_authSuccess
-                                            ? const Color(0xFF03DAC6)
-                                            : const Color(0xFF6C63FF))
-                                        .withOpacity(0.5),
-                                    blurRadius: 50,
-                                    spreadRadius: 10,
-                                  )
-                                ]
-                              : [],
-                        ),
-                        child: ClipOval(
-                          child: _isCameraInitialized
-                              ? Stack(
-                                  fit: StackFit.expand,
-                                  children: [
-                                    Transform.scale(
-                                      // Scale to fill circle
-                                      scale: _cameraController!.value.aspectRatio,
-                                      child: Center(
-                                        child: CameraPreview(_cameraController!),
-                                      ),
-                                    ),
-                                    if (_isAuthenticating)
-                                      Container(
-                                        color: const Color(0xFF6C63FF).withOpacity(0.2), // Scanner overlay
-                                      ),
-                                    if (_authSuccess)
-                                      Container(
-                                        color: const Color(0xFF03DAC6).withOpacity(0.4),
-                                        child: const Icon(Icons.check, size: 80, color: Colors.white),
-                                      ),
-                                  ],
-                                )
-                              : const Center(
-                                  child: CircularProgressIndicator(color: Color(0xFF6C63FF)),
-                                ),
-                        ),
-                      ),
+              
+              const Spacer(),
+              
+              Text(
+                _statusText,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: _authSuccess ? Colors.green : beige.withOpacity(0.8),
+                  fontWeight: FontWeight.w400,
+                  letterSpacing: 1.2,
+                ),
+              ),
+              
+              const SizedBox(height: 48),
+              
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: (_isAuthenticating || !_isCameraInitialized || _authSuccess) 
+                      ? null 
+                      : _startAuth,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: beige,
+                    foregroundColor: const Color(0xFF0B1021),
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    elevation: 0,
                   ),
-                  const SizedBox(height: 32),
-                  Text(
-                    _statusText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
+                  child: Text(
+                    _isAuthenticating ? 'WAIT / PATIENTER' : 'START / DÉMARRER',
+                    style: const TextStyle(
                       fontSize: 16,
-                      color: _authSuccess
-                          ? const Color(0xFF03DAC6)
-                          : Colors.white.withOpacity(0.8),
-                      height: 1.5,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2.0,
                     ),
                   ),
-                  const SizedBox(height: 32),
-
-                  // Status chips
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _StatusChip(
-                        label: 'Visage',
-                        icon: Icons.face,
-                        active: _faceScan,
-                      ),
-                      const SizedBox(width: 16),
-                      _StatusChip(
-                        label: 'Geste',
-                        icon: Icons.pan_tool,
-                        active: _gestureScan,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Bottom buttons
-              Padding(
-                padding: const EdgeInsets.only(bottom: 40),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: (_isAuthenticating || !_isCameraInitialized) ? null : _startAuth,
-                        icon: const Icon(Icons.fingerprint),
-                        label: Text(_isAuthenticating
-                            ? 'Analyse en cours...'
-                            : 'Démarrer l\'analyse'),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const EnrollmentScreen()),
-                        );
-                      },
-                      child: Text(
-                        'Première utilisation ? S\'inscrire',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ),
+              const SizedBox(height: 48),
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool active;
-
-  const _StatusChip({
-    required this.label,
-    required this.icon,
-    required this.active,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 400),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        color: active
-            ? const Color(0xFF03DAC6).withOpacity(0.15)
-            : Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: active ? const Color(0xFF03DAC6) : Colors.white24,
-          width: 1,
-        ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            active ? Icons.check_circle : icon,
-            size: 18,
-            color: active ? const Color(0xFF03DAC6) : Colors.white38,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            label,
-            style: TextStyle(
-              color: active ? const Color(0xFF03DAC6) : Colors.white38,
-              fontWeight: active ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
       ),
     );
   }
