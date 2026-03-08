@@ -24,6 +24,11 @@ jobs:
         run: |
           # Generate the iOS platform files without touching existing Dart code
           flutter create --platforms=ios --overwrite . 2>&1 | tee create_log.txt || true
+          
+          # CRITICAL: restore our actual app code and config!
+          # flutter create --overwrite destroys lib/main.dart and pubspec.yaml
+          git checkout lib/ pubspec.yaml
+          
           echo "--- flutter create exit: $?"
           ls -la ios/ 2>/dev/null || echo "WARNING: ios/ dir not created"
 
