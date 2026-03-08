@@ -42,7 +42,17 @@ jobs:
       - name: Build iOS (No Codesign)
         run: |
           set -o pipefail
-          flutter build ios --release --no-codesign 2>&1 | tee build_log.txt || (echo "### Build Failed" >> $GITHUB_STEP_SUMMARY && echo '```text' >> $GITHUB_STEP_SUMMARY && tail -n 200 build_log.txt >> $GITHUB_STEP_SUMMARY && echo '```' >> $GITHUB_STEP_SUMMARY && exit 1)
+          flutter build ios --release --no-codesign 2>&1 | tee build_log.txt
+
+      - name: Publish Error Log
+        if: failure()
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          cp build_log.txt ./error_log_output.txt
+          git add error_log_output.txt
+          git commit -m "ci: publish build log [skip ci]" || true
+          git push -u origin main || true
 
       - name: Upload logs
         uses: actions/upload-artifact@v4
