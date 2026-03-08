@@ -50,7 +50,7 @@ class GestureFaceApp extends StatelessWidget {
             ),
           ),
         ),
-        cardTheme: CardTheme(
+        cardTheme: CardThemeData(
           color: const Color(0xFF1E1E2E),
           elevation: 4,
           shape: RoundedRectangleBorder(
