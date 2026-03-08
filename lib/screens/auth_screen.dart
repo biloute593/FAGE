@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
 import 'package:camera/camera.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'dashboard_screen.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -17,6 +19,15 @@ class _AuthScreenState extends State<AuthScreen> {
   
   CameraController? _cameraController;
   bool _isCameraInitialized = false;
+
+  final FaceDetector _faceDetector = FaceDetector(
+    options: FaceDetectorOptions(
+      enableContours: false,
+      enableLandmarks: false,
+      performanceMode: FaceDetectorMode.fast,
+    ),
+  );
+  bool _isProcessingFrame = false;
 
   @override
   void initState() {
@@ -57,24 +68,100 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void dispose() {
     _cameraController?.dispose();
+    _faceDetector.close();
     super.dispose();
   }
 
   Future<void> _startAuth() async {
-    if (_isAuthenticating || !_isCameraInitialized) return;
+    if (_isAuthenticating || !_isCameraInitialized || _cameraController == null) return;
     
     setState(() {
       _isAuthenticating = true;
       _authSuccess = false;
-      _statusText = 'Scanning... / Analyse en cours...';
+      _statusText = 'Scanning for face... / Recherche de visage...';
     });
 
-    // Simulate recording face and gesture
-    await Future.delayed(const Duration(milliseconds: 2500));
-    if (!mounted) return;
+    int framesChecked = 0;
+    bool faceFound = false;
+
+    // Stream frames to verify a real face is present
+    await _cameraController!.startImageStream((CameraImage image) async {
+      if (_isProcessingFrame || faceFound || framesChecked >= 20) return;
+      _isProcessingFrame = true;
+      framesChecked++;
+
+      try {
+        final inputImage = _inputImageFromCameraImage(image);
+        if (inputImage == null) {
+          _isProcessingFrame = false;
+          return;
+        }
+
+        final List<Face> faces = await _faceDetector.processImage(inputImage);
+        
+        if (faces.isNotEmpty) {
+          faceFound = true;
+          await _cameraController!.stopImageStream();
+          _handleSuccess();
+        }
+      } catch (e) {
+        // ignore
+      } finally {
+        _isProcessingFrame = false;
+      }
+    });
+
+    // Timeout fallback if no face found after ~3 seconds
+    Future.delayed(const Duration(milliseconds: 3000), () async {
+      if (faceFound || !mounted) return;
+      if (_cameraController!.value.isStreamingImages) {
+        await _cameraController!.stopImageStream();
+      }
+      setState(() {
+        _isAuthenticating = false;
+        _statusText = 'Failed: No face detected / Échec: Aucun visage détecté';
+      });
+    });
+  }
+
+  InputImage? _inputImageFromCameraImage(CameraImage image) {
+    if (_cameraController == null) return null;
+    final camera = _cameraController!.description;
     
+    final WriteBuffer allBytes = WriteBuffer();
+    for (final Plane plane in image.planes) {
+      allBytes.putUint8List(plane.bytes);
+    }
+    final bytes = allBytes.done().buffer.asUint8List();
+
+    final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
+    const InputImageRotation imageRotation = InputImageRotation.rotation270deg;
+    final InputImageFormat inputImageFormat = InputImageFormatValue.fromRawValue(image.format.raw) ?? InputImageFormat.nv21;
+
+    final planeData = image.planes.map(
+      (Plane plane) {
+        return InputImagePlaneMetadata(
+          bytesPerRow: plane.bytesPerRow,
+          height: plane.height,
+          width: plane.width,
+        );
+      },
+    ).toList();
+
+    final inputImageData = InputImageData(
+      size: imageSize,
+      imageRotation: imageRotation,
+      inputImageFormat: inputImageFormat,
+      planeData: planeData,
+    );
+
+    return InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
+  }
+
+  void _handleSuccess() async {
+    if (!mounted) return;
     setState(() {
-      _statusText = 'Success / Succès';
+      _statusText = 'Face Detected! / Visage Détecté!';
       _authSuccess = true;
       _isAuthenticating = false;
     });
@@ -102,7 +189,6 @@ class _AuthScreenState extends State<AuthScreen> {
             children: [
               const Spacer(),
               
-              // Minimalist Camera Preview
               Container(
                 width: 220,
                 height: 220,
@@ -124,7 +210,7 @@ class _AuthScreenState extends State<AuthScreen> {
                                 child: CameraPreview(_cameraController!),
                               ),
                             ),
-                            if (_isAuthenticating)
+                            if (_isAuthenticating && !_authSuccess)
                               Container(
                                 color: beige.withOpacity(0.1),
                               ),
@@ -147,10 +233,11 @@ class _AuthScreenState extends State<AuthScreen> {
                 _statusText,
                 style: TextStyle(
                   fontSize: 16,
-                  color: _authSuccess ? Colors.green : beige.withOpacity(0.8),
+                  color: _authSuccess ? Colors.green : (_statusText.contains('Failed') ? Colors.red : beige.withOpacity(0.8)),
                   fontWeight: FontWeight.w400,
                   letterSpacing: 1.2,
                 ),
+                textAlign: TextAlign.center,
               ),
               
               const SizedBox(height: 48),
