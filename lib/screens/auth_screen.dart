@@ -126,8 +126,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   InputImage? _inputImageFromCameraImage(CameraImage image) {
     if (_cameraController == null) return null;
-    final camera = _cameraController!.description;
-    
+
     final WriteBuffer allBytes = WriteBuffer();
     for (final Plane plane in image.planes) {
       allBytes.putUint8List(plane.bytes);
@@ -136,26 +135,17 @@ class _AuthScreenState extends State<AuthScreen> {
 
     final Size imageSize = Size(image.width.toDouble(), image.height.toDouble());
     const InputImageRotation imageRotation = InputImageRotation.rotation270deg;
-    final InputImageFormat inputImageFormat = InputImageFormatValue.fromRawValue(image.format.raw) ?? InputImageFormat.nv21;
+    final InputImageFormat inputImageFormat =
+        InputImageFormatValue.fromRawValue(image.format.raw) ?? InputImageFormat.nv21;
 
-    final planeData = image.planes.map(
-      (Plane plane) {
-        return InputImagePlaneMetadata(
-          bytesPerRow: plane.bytesPerRow,
-          height: plane.height,
-          width: plane.width,
-        );
-      },
-    ).toList();
-
-    final inputImageData = InputImageData(
+    final inputImageMetadata = InputImageMetadata(
       size: imageSize,
-      imageRotation: imageRotation,
-      inputImageFormat: inputImageFormat,
-      planeData: planeData,
+      rotation: imageRotation,
+      format: inputImageFormat,
+      bytesPerRow: image.planes.first.bytesPerRow,
     );
 
-    return InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
+    return InputImage.fromBytes(bytes: bytes, metadata: inputImageMetadata);
   }
 
   void _handleSuccess() async {
