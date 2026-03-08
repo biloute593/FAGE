@@ -31,6 +31,10 @@ jobs:
           # flutter create --overwrite destroys lib/main.dart and pubspec.yaml
           git checkout lib/ pubspec.yaml
           
+          # Inject Camera Permissions for the real biometric feed
+          plutil -insert NSCameraUsageDescription -string "L'application utilise l'appareil photo pour l'authentification faciale." ios/Runner/Info.plist || true
+          plutil -insert NSMicrophoneUsageDescription -string "Le micro est requis par le plugin de gestion vidéo." ios/Runner/Info.plist || true
+          
           echo "--- flutter create exit: $?"
           ls -la ios/ 2>/dev/null || echo "WARNING: ios/ dir not created"
 

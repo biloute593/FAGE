@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 
 class EnrollmentScreen extends StatefulWidget {
   const EnrollmentScreen({super.key});
@@ -11,6 +12,9 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
   int _step = 0;
   bool _processing = false;
   final List<bool> _stepsCompleted = [false, false, false, false];
+
+  CameraController? _cameraController;
+  bool _isCameraInitialized = false;
 
   final List<Map<String, dynamic>> _steps = [
     {
@@ -39,14 +43,56 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
     },
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _initCamera();
+  }
+
+  Future<void> _initCamera() async {
+    try {
+      final cameras = await availableCameras();
+      final frontCamera = cameras.firstWhere(
+        (camera) => camera.lensDirection == CameraLensDirection.front,
+        orElse: () => cameras.first,
+      );
+
+      _cameraController = CameraController(
+        frontCamera,
+        ResolutionPreset.medium,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.yuv420,
+      );
+
+      await _cameraController!.initialize();
+      if (mounted) {
+        setState(() {
+          _isCameraInitialized = true;
+        });
+      }
+    } catch (e) {
+      debugPrint('Camera error: $e');
+    }
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
+  }
+
   Future<void> _processStep() async {
     setState(() => _processing = true);
     await Future.delayed(const Duration(milliseconds: 2000));
+    if (!mounted) return;
+    
     setState(() {
       _stepsCompleted[_step] = true;
       _processing = false;
     });
     await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
+    
     if (_step < _steps.length - 1) {
       setState(() => _step++);
     } else {
@@ -91,10 +137,14 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_steps.isEmpty) return const SizedBox();
+    
     final step = _steps[_step];
     return Scaffold(
+      backgroundColor: const Color(0xFF12121F),
       appBar: AppBar(
         title: const Text('Inscription biométrique'),
+        backgroundColor: const Color(0xFF1E1E2E),
       ),
       body: SafeArea(
         child: Padding(
@@ -128,39 +178,64 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
               ),
               const SizedBox(height: 40),
 
-              // Central icon
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                padding: const EdgeInsets.all(32),
+              // Central Live Camera Scanner
+              Container(
+                width: 200,
+                height: 200,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: (step['color'] as Color).withOpacity(0.15),
                   border: Border.all(
-                    color: (step['color'] as Color).withOpacity(0.4),
-                    width: 2,
+                    color: _processing
+                        ? step['color'] as Color
+                        : (step['color'] as Color).withOpacity(0.4),
+                    width: _processing ? 3 : 2,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: (step['color'] as Color).withOpacity(0.2),
-                      blurRadius: 40,
-                      spreadRadius: 5,
+                      color: (step['color'] as Color).withOpacity(_processing ? 0.4 : 0.2),
+                      blurRadius: _processing ? 50 : 40,
+                      spreadRadius: _processing ? 10 : 5,
                     ),
                   ],
                 ),
-                child: _processing
-                    ? CircularProgressIndicator(
-                        color: step['color'] as Color,
-                        strokeWidth: 3,
-                      )
-                    : Icon(
-                        _stepsCompleted[_step]
-                            ? Icons.check_circle
-                            : step['icon'] as IconData,
-                        size: 80,
-                        color: _stepsCompleted[_step]
-                            ? Colors.green
-                            : step['color'] as Color,
-                      ),
+                child: ClipOval(
+                  child: _isCameraInitialized
+                      ? Stack(
+                          fit: StackFit.expand,
+                          children: [
+                            Transform.scale(
+                              scale: _cameraController!.value.aspectRatio,
+                              child: Center(
+                                child: CameraPreview(_cameraController!),
+                              ),
+                            ),
+                            if (_processing)
+                              Container(
+                                color: (step['color'] as Color).withOpacity(0.2),
+                              ),
+                            if (_stepsCompleted[_step])
+                              Container(
+                                color: Colors.green.withOpacity(0.4),
+                                child: const Icon(Icons.check, size: 80, color: Colors.white),
+                              ),
+                          ],
+                        )
+                      : _processing
+                          ? CircularProgressIndicator(
+                              color: step['color'] as Color,
+                              strokeWidth: 3,
+                            )
+                          : Icon(
+                              _stepsCompleted[_step]
+                                  ? Icons.check_circle
+                                  : step['icon'] as IconData,
+                              size: 80,
+                              color: _stepsCompleted[_step]
+                                  ? Colors.green
+                                  : step['color'] as Color,
+                            ),
+                ),
               ),
               const SizedBox(height: 40),
 
@@ -189,17 +264,17 @@ class _EnrollmentScreenState extends State<EnrollmentScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: _processing ? null : _processStep,
+                  onPressed: (_processing || !_isCameraInitialized) ? null : _processStep,
                   icon: Icon(
                     _processing ? Icons.hourglass_empty : Icons.play_arrow,
                   ),
                   label: Text(
                     _processing
-                        ? 'Enregistrement...'
+                        ? 'Enregistrement en cours...'
                         : _stepsCompleted[_step]
                             ? 'Continuer'
-                            : 'Démarrer',
-                    style: const TextStyle(fontSize: 18),
+                            : 'Démarrer l\'analyse',
+                    style: const TextStyle(fontSize: 16),
                   ),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: step['color'] as Color,
