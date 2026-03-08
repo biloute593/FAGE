@@ -39,6 +39,19 @@ jobs:
           sed -i '' 's/IPHONEOS_DEPLOYMENT_TARGET = [0-9.]*;/IPHONEOS_DEPLOYMENT_TARGET = 15.5;/g' ios/Runner.xcodeproj/project.pbxproj || true
           sed -i '' "s/platform :ios, '[0-9.]*'/platform :ios, '15.5'/g" ios/Podfile || true
           
+          # Inject a post_install hook to force all Pods to compile at 15.5
+          cat << 'EOF' >> ios/Podfile
+          
+          post_install do |installer|
+            installer.pods_project.targets.each do |target|
+              flutter_additional_ios_build_settings(target)
+              target.build_configurations.each do |config|
+                config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.5'
+              end
+            end
+          end
+          EOF
+          
           echo "--- flutter create exit: $?"
           ls -la ios/ 2>/dev/null || echo "WARNING: ios/ dir not created"
 
