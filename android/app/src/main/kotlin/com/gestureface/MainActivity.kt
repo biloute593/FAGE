@@ -10,12 +10,12 @@ import io.flutter.plugin.common.MethodChannel
 class MainActivity: FlutterActivity() {
     private val CHANNEL = "com.gestureface/applocker"
 
-    override fun getInitialRoute(): String {
+    override fun getInitialRoute(): String? {
         val lockedApp = intent.getStringExtra("locked_app")
         if (lockedApp != null) {
             return "/lock_overlay"
         }
-        return super.getInitialRoute()
+        return super.getInitialRoute() ?: "/"
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
