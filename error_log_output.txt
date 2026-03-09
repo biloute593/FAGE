@@ -15,17 +15,15 @@ Note: /home/runner/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.11.1/android
 Note: Recompile with -Xlint:unchecked for details.
 Note: /home/runner/.pub-cache/hosted/pub.dev/google_mlkit_face_detection-0.13.2/android/src/main/java/com/google_mlkit_face_detection/FaceDetector.java uses unchecked or unsafe operations.
 Note: Recompile with -Xlint:unchecked for details.
-Incorrect package="com.gestureface" found in source AndroidManifest.xml: /home/runner/work/FAGE/FAGE/android/app/src/main/AndroidManifest.xml.
-Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported.
-Recommendation: remove package="com.gestureface" from the source AndroidManifest.xml: /home/runner/work/FAGE/FAGE/android/app/src/main/AndroidManifest.xml.
+Caught exception: Already watching path: /home/runner/work/FAGE/FAGE/android
+e: file:///home/runner/work/FAGE/FAGE/android/app/src/main/kotlin/com/gestureface/MainActivity.kt:18:16 Return type mismatch: expected 'String', actual 'String?'.
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':app:processReleaseMainManifest'.
-> Incorrect package="com.gestureface" found in source AndroidManifest.xml: /home/runner/work/FAGE/FAGE/android/app/src/main/AndroidManifest.xml.
-  Setting the namespace via the package attribute in the source AndroidManifest.xml is no longer supported.
-  Recommendation: remove package="com.gestureface" from the source AndroidManifest.xml: /home/runner/work/FAGE/FAGE/android/app/src/main/AndroidManifest.xml.
+Execution failed for task ':app:compileReleaseKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
 
 * Try:
 > Run with --stacktrace option to get the stack trace.
@@ -33,6 +31,6 @@ Execution failed for task ':app:processReleaseMainManifest'.
 > Run with --scan to get full insights.
 > Get more help at https://help.gradle.org.
 
-BUILD FAILED in 7m 17s
-Running Gradle task 'assembleRelease'...                          438.5s
+BUILD FAILED in 7m 57s
+Running Gradle task 'assembleRelease'...                          478.5s
 Gradle task assembleRelease failed with exit code 1
