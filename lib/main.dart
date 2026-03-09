@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:device_apps/device_apps.dart';
+import 'package:installed_apps/installed_apps.dart';
+import 'package:installed_apps/app_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/lock_overlay_screen.dart';
 void main() async {
@@ -87,7 +88,7 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   static const platform = MethodChannel('com.gestureface/applocker');
-  List<Application> _apps = [];
+  List<AppInfo> _apps = [];
   List<String> _protectedAppPackages = [];
   bool _isLoading = true;
 
@@ -106,12 +107,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   Future<void> _loadInstalledApps() async {
-    List<Application> apps = await DeviceApps.getInstalledApplications(
-        includeAppIcons: true,
-        includeSystemApps: true,
-        onlyAppsWithLaunchIntent: true);
+    List<AppInfo> apps = await InstalledApps.getInstalledApps(true, true);
         
-    apps.sort((a, b) => a.appName.toLowerCase().compareTo(b.appName.toLowerCase()));
+    apps.sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
     
     setState(() {
       _apps = apps;
@@ -176,10 +174,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 final isProtected = _protectedAppPackages.contains(app.packageName);
                 
                 return ListTile(
-                  leading: app is ApplicationWithIcon
-                      ? Image.memory(app.icon, width: 40, height: 40)
+                  leading: app.icon != null
+                      ? Image.memory(app.icon!, width: 40, height: 40)
                       : const Icon(Icons.android),
-                  title: Text(app.appName),
+                  title: Text(app.name),
                   subtitle: Text(app.packageName, style: const TextStyle(fontSize: 10, color: Colors.grey)),
                   trailing: Switch(
                     value: isProtected,
