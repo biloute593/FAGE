@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gestureface">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Permissions requises pour le fonctionnement de l'App Locker -->
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
